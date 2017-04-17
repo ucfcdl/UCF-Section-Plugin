@@ -1,0 +1,5 @@
+<?php
+/**
+ * Handles uninstallation logic.
+ **/
+?>
