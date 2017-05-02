@@ -8,7 +8,7 @@ Provides a shortcode, functions, and default styles for displaying Sections.
 Adds a new post type called Sections that can be added to pages using a ucf-section shortcode. Sections will display content from within the Wordpress editor.
 
 The ucf-section shortcode has one option:
-* title - the title of the section to be displayed
+* slug - the slug of the section to be displayed
 
 
 ## Installation ##
