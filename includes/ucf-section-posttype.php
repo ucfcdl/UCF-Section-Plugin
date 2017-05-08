@@ -21,71 +21,7 @@ if ( ! class_exists( 'UCF_Section_PostType' ) ) {
 				)
 			);
 			register_post_type( 'ucf_section', self::args( $labels ) );
-			add_action( 'add_meta_boxes', array( 'UCF_Section_PostType', 'register_metabox' ) );
-			add_action( 'save_post', array( 'UCF_Section_PostType', 'save_metabox' ) );
-		}
-
-
-		/**
-		 * Adds a metabox to the section custom post type.
-		 * @author RJ Bruneel
-		 * @since 1.0.0
-		 **/
-		public static function register_metabox() {
-			add_meta_box(
-				'ucf_section_metabox',
-				'Section Details',
-				array( 'UCF_Section_PostType', 'register_metafields' ),
-				'ucf_section',
-				'normal',
-				'high'
-			);
-		}
-
-
-		/**
-		 * Adds metafields to the metabox
-		 * @author RJ Bruneel
-		 * @since 1.0.0
-		 * @param $post WP_POST object
-		 **/
-		public static function register_metafields( $post ) {
-			wp_nonce_field( 'ucf_section_nonce_save', 'ucf_section_nonce' );
-			$header = get_post_meta( $post->ID, 'ucf_section_header', TRUE );
-?>
-			<table class="form-table">
-				<tbody>
-					<tr>
-						<th>
-							<label class="block" for="ucf_section_header"><strong>Header</strong></label>
-						</th>
-						<td>
-							<p class="description">(Optional) Large header displayed at the top of the section.</p>
-							<input type="text" id="ucf_section_header" name="ucf_section_header" class="regular-text" <?php echo ( ! empty( $header ) ) ? 'value="' . $header . '"' : ''; ?>>
-						</td>
-					</tr>
-				</tbody>
-			</table>
-<?php
-		}
-
-		/**
-		 * Handles saving the data in the metabox
-		 * @author RJ Bruneel
-		 * @since 1.0.0
-		 * @param $post_id WP_POST post id
-		 **/
-		public static function save_metabox( $post_id ) {
-			$post_type = get_post_type( $post_id );
-			// If this isn't a section, return.
-			if ( 'ucf_section' !== $post_type ) return;
-			if ( isset( $_POST['ucf_section_header'] ) ) {
-				// Ensure field is valid.
-				$header = sanitize_text_field( $_POST['ucf_section_header'] );
-				if ( $header ) {
-					update_post_meta( $post_id, 'ucf_section_header', $header );
-				}
-			}
+			add_action( 'save_post', array( 'UCF_Section_PostType' ) );
 		}
 
 		/**
