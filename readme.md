@@ -24,7 +24,13 @@ The ucf-section shortcode has one option:
 
 ## Changelog ##
 
-### 1.0 ###
+### 1.0.1 ###
+Bug Fixes:
+* Fixes [#2](https://github.com/UCF/UCF-Section-Plugin/issues/2) by parsing `$labels` args and setting them to variables.
+* Fixes [#1](https://github.com/UCF/UCF-Section-Plugin/issues/1) by renaming the non-existent `$output` variable to `$before`, `$content` and `$after` respectively.
+* Adds additional comments.
+
+### 1.0.0 ###
 * Initial release
 
 
