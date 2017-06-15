@@ -15,13 +15,12 @@ if ( ! class_exists( 'UCF_Section_PostType' ) ) {
 			$labels = apply_filters(
 				'ucf_section_labels',
 				array(
-					'singular'  => 'Section',
-					'plural'    => 'Sections',
-					'post_type' => 'ucf_section'
+					'singular'    => 'Section',
+					'plural'      => 'Sections',
+					'text_domain' => 'ucf_section'
 				)
 			);
 			register_post_type( 'ucf_section', self::args( $labels ) );
-			add_action( 'save_post', array( 'UCF_Section_PostType' ) );
 		}
 
 		/**
@@ -30,44 +29,55 @@ if ( ! class_exists( 'UCF_Section_PostType' ) ) {
 		 * @since 1.0.0
 		 * @param $singular string | The singular form for the CPT labels.
 		 * @param $plural string | The plural form for the CPT labels.
-		 * @param $post_type string | The post type name.
+		 * @param $text_domain string | The text domain.
 		 * @return Array
 		 **/
-		public static function labels( $singular, $plural, $post_type ) {
+		public static function labels( $singular, $plural, $text_domain ) {
 			return array(
-				'name'                  => _x( $plural, 'Post Type General Name', $post_type ),
-				'singular_name'         => _x( $singular, 'Post Type Singular Name', $post_type ),
-				'menu_name'             => __( $plural, $post_type ),
-				'name_admin_bar'        => __( $singular, $post_type ),
-				'archives'              => __( $plural . ' Archives', $post_type ),
-				'parent_item_colon'     => __( 'Parent ' . $singular . ':', $post_type ),
-				'all_items'             => __( 'All ' . $plural, $post_type ),
-				'add_new_item'          => __( 'Add New ' . $singular, $post_type ),
-				'add_new'               => __( 'Add New', $post_type ),
-				'new_item'              => __( 'New ' . $singular, $post_type ),
-				'edit_item'             => __( 'Edit ' . $singular, $post_type ),
-				'update_item'           => __( 'Update ' . $singular, $post_type ),
-				'view_item'             => __( 'View ' . $singular, $post_type ),
-				'search_items'          => __( 'Search ' . $plural, $post_type ),
-				'not_found'             => __( 'Not found', $post_type ),
-				'not_found_in_trash'    => __( 'Not found in Trash', $post_type ),
-				'featured_image'        => __( 'Featured Image', $post_type ),
-				'set_featured_image'    => __( 'Set featured image', $post_type ),
-				'remove_featured_image' => __( 'Remove featured image', $post_type ),
-				'use_featured_image'    => __( 'Use as featured image', $post_type ),
-				'insert_into_item'      => __( 'Insert into ' . $singular, $post_type ),
-				'uploaded_to_this_item' => __( 'Uploaded to this ' . $singular, $post_type ),
-				'items_list'            => __( $plural . ' list', $post_type ),
-				'items_list_navigation' => __( $plural . ' list navigation', $post_type ),
-				'filter_items_list'     => __( 'Filter ' . $plural . ' list', $post_type ),
+				'name'                  => _x( $plural, 'Post Type General Name', $text_domain ),
+				'singular_name'         => _x( $singular, 'Post Type Singular Name', $text_domain ),
+				'menu_name'             => __( $plural, $text_domain ),
+				'name_admin_bar'        => __( $singular, $text_domain ),
+				'archives'              => __( $plural . ' Archives', $text_domain ),
+				'parent_item_colon'     => __( 'Parent ' . $singular . ':', $text_domain ),
+				'all_items'             => __( 'All ' . $plural, $text_domain ),
+				'add_new_item'          => __( 'Add New ' . $singular, $text_domain ),
+				'add_new'               => __( 'Add New', $text_domain ),
+				'new_item'              => __( 'New ' . $singular, $text_domain ),
+				'edit_item'             => __( 'Edit ' . $singular, $text_domain ),
+				'update_item'           => __( 'Update ' . $singular, $text_domain ),
+				'view_item'             => __( 'View ' . $singular, $text_domain ),
+				'search_items'          => __( 'Search ' . $plural, $text_domain ),
+				'not_found'             => __( 'Not found', $text_domain ),
+				'not_found_in_trash'    => __( 'Not found in Trash', $text_domain ),
+				'featured_image'        => __( 'Featured Image', $text_domain ),
+				'set_featured_image'    => __( 'Set featured image', $text_domain ),
+				'remove_featured_image' => __( 'Remove featured image', $text_domain ),
+				'use_featured_image'    => __( 'Use as featured image', $text_domain ),
+				'insert_into_item'      => __( 'Insert into ' . $singular, $text_domain ),
+				'uploaded_to_this_item' => __( 'Uploaded to this ' . $singular, $text_domain ),
+				'items_list'            => __( $plural . ' list', $text_domain ),
+				'items_list_navigation' => __( $plural . ' list navigation', $text_domain ),
+				'filter_items_list'     => __( 'Filter ' . $plural . ' list', $text_domain ),
 			);
 		}
 
-		public static function args() {
+		/**
+		 * Returns the argument array for the section custom post type
+		 * @author RJ Bruneel
+		 * @since 1.0.0
+		 * @param $labels Array | An array of labels
+		 * @return Array
+		 **/
+		public static function args( $labels ) {
+			$singular = $labels['singular'];
+			$plural = $labels['plural'];
+			$text_domain = $labels['text_domain'];
+
 			$args = array(
 				'label'                 => __( 'Section', 'ucf_section' ),
 				'description'           => __( 'Sections', 'ucf_section' ),
-				'labels'                => self::labels( $singular, $plural, $post_type ),
+				'labels'                => self::labels( $singular, $plural, $text_domain ),
 				'supports'              => array( 'title', 'editor', 'thumbnail', 'revisions', ),
 				'taxonomies'            => self::taxonomies(),
 				'hierarchical'          => false,
@@ -87,6 +97,13 @@ if ( ! class_exists( 'UCF_Section_PostType' ) ) {
 			$args = apply_filters( 'ucf_section_post_type_args', $args );
 			return $args;
 		}
+
+		/**
+		 * Returns an array of taxonomies to associate with the post type
+		 * @author RJ Bruneel
+		 * @since 1.0.0
+		 * @return Array
+		 **/
 		public static function taxonomies() {
 			$retval = array();
 			$retval = apply_filters( 'ucf_section_taxonomies', $retval );
@@ -99,6 +116,8 @@ if ( ! class_exists( 'UCF_Section_PostType' ) ) {
 			return $retval;
 		}
 	}
+
+	/** Register the post type on init */
     add_action( 'init', array( 'UCF_Section_PostType', 'register' ), 10, 0 );
 }
 ?>

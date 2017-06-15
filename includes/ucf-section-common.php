@@ -32,17 +32,17 @@ if ( ! class_exists( 'UCF_Section_Common' ) ) {
 
 				$before = self::ucf_section_display_before( $section );
 				if ( has_filter( 'ucf_section_display_before' ) ) {
-					$before = apply_filters( 'ucf_section_display_before', $output, $section );
+					$before = apply_filters( 'ucf_section_display_before', $before, $section );
 				}
 
 				$content = self::ucf_section_display( $section );
 				if ( has_filter( 'ucf_section_display' ) ) {
-					$content = apply_filters( 'ucf_section_display', $output, $section );
+					$content = apply_filters( 'ucf_section_display', $content, $section );
 				}
 
 				$after = self::ucf_section_display_after( $section );
 				if ( has_filter( 'ucf_section_display_after' ) ) {
-					$after = apply_filters( 'ucf_section_display_after', $output, $section );
+					$after = apply_filters( 'ucf_section_display_after', $after, $section );
 				}
 
 				$retval = $before . $content . $after;
