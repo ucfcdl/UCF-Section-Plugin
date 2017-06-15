@@ -21,7 +21,6 @@ if ( ! class_exists( 'UCF_Section_PostType' ) ) {
 				)
 			);
 			register_post_type( 'ucf_section', self::args( $labels ) );
-			add_action( 'save_post', array( 'UCF_Section_PostType' ) );
 		}
 
 		/**
