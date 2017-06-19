@@ -124,7 +124,7 @@ if ( ! class_exists( 'UCF_Section_Common' ) ) {
 		public static function get_section_by_slug( $slug ) {
 			$args = array(
 				'post_type'   => 'ucf_section',
-				'post_name'   => $slug,
+				'name'        => $slug,
 				'numberposts' => 1,
 			);
 
