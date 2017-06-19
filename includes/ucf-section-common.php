@@ -45,7 +45,7 @@ if ( ! class_exists( 'UCF_Section_Common' ) ) {
 					$after = apply_filters( 'ucf_section_display_after', $after, $section );
 				}
 
-				$retval = $before . $content . $after;
+				$retval = apply_filters( 'the_content', $before . $content . $after );
 			}
 
 			return $retval;
@@ -86,7 +86,7 @@ if ( ! class_exists( 'UCF_Section_Common' ) ) {
 		public static function ucf_section_display( $section ) {
 			ob_start();
 		?>
-			<?php echo apply_filters( 'the_content', $section->post_content ); ?>
+			<?php echo $section->post_content; ?>
 		<?php
 			return ob_get_clean();
 		}
