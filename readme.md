@@ -24,6 +24,10 @@ The ucf-section shortcode has one option:
 
 ## Changelog ##
 
+### 1.0.2 ###
+Bug Fixes:
+* Corrects incorrect sections being returned when providing a slug instead of an id.
+
 ### 1.0.1 ###
 Bug Fixes:
 * Fixes [#2](https://github.com/UCF/UCF-Section-Plugin/issues/2) by parsing `$labels` args and setting them to variables.
