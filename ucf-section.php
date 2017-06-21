@@ -12,6 +12,8 @@ if ( ! defined( 'WPINC' ) ) {
 	die;
 }
 
+add_filter( 'the_content', array( 'UCF_Section_Common', 'format_shortcode_output' ), 10, 1 );
+
 add_action( 'plugins_loaded', function() {
 
 	define( 'UCF_SECTION__PLUGIN_FILE', __FILE__ );
