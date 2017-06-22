@@ -84,7 +84,7 @@ if ( ! class_exists( 'UCF_Section_Common' ) ) {
 		public static function ucf_section_display_before( $section, $class, $title, $disable_id ) {
 			$class = ! empty( $class ) ? ' class="' . $class . '"' : '';
 			$title = ! empty( $title ) ? ' data-section-link-title="' . $title . '"' : '';
-			$id = $disable_id ? '' : 'id="ucf-section-' . $section->post_name . '"';
+			$id = $disable_id ? '' : ' id="ucf-section-' . $section->post_name . '"';
 
 			ob_start();
 		?>
