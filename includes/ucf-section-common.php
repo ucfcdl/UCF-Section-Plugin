@@ -138,6 +138,21 @@ if ( ! class_exists( 'UCF_Section_Common' ) ) {
 
 			return null;
 		}
+
+		/**
+		 * Replaces paragraph tags around the section shortcode
+		 * @author Jim Barnes
+		 * @since 1.0.0
+		 * @param $content string | The content being filtered
+		 * @return string | The formatted content
+		 **/
+		public static function format_shortcode_output( $content ) {
+			$block = 'ucf-section';
+
+			$rep = preg_replace( "/(<p>)?\[($block)(\s[^\]]+)?\](<\/p>|<br \/>)?/", "[$2$3]", $content );
+			$rep = preg_replace( "/(<p>)?\[\/($block)](<\/p>|<br \/>)?/", "[/$2]", $rep );
+			return $rep;
+		}
 	}
 }
 
