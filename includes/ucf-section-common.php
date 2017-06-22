@@ -20,6 +20,7 @@ if ( ! class_exists( 'UCF_Section_Common' ) ) {
 			$retval = '';
 			$section = null;
 			$class = '';
+			$title = '';
 
 			if ( isset( $attr['slug'] ) ) {
 				$section = self::get_section_by_slug( $attr['slug'] );
@@ -33,11 +34,15 @@ if ( ! class_exists( 'UCF_Section_Common' ) ) {
 				$class = $attr['class'];
 			}
 
+			if ( isset( $attr['title'] ) ) {
+				$title = $attr['title'];
+			}
+
 			if ( $section ) {
 
-				$before = self::ucf_section_display_before( $section, $class );
+				$before = self::ucf_section_display_before( $section, $class, $title );
 				if ( has_filter( 'ucf_section_display_before' ) ) {
-					$before = apply_filters( 'ucf_section_display_before', $before, $section, $class );
+					$before = apply_filters( 'ucf_section_display_before', $before, $section, $class, $title );
 				}
 
 				$content = self::ucf_section_display( $section );
@@ -66,11 +71,13 @@ if ( ! class_exists( 'UCF_Section_Common' ) ) {
 		 *
 		 * @param $section WP_Post object | The section
 		 * @param $class string | The string of css classes
+		 * @param $title string | The title to display in the section menu
 		 *
 		 * @return string | The html to be appended to output.
 		 **/
-		public static function ucf_section_display_before( $section, $class ) {
+		public static function ucf_section_display_before( $section, $class, $title ) {
 			$class = ! empty( $class ) ? ' class="' . $class . '"' : '';
+			$title = ! empty( $title ) ? ' data-section-link-title="' . $title . '"' : '';
 
 			ob_start();
 		?>

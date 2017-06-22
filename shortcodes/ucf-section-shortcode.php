@@ -11,7 +11,8 @@ if ( ! class_exists( 'UCF_Section_Shortcode' ) ) {
 			$atts = shortcode_atts( array(
 				'slug'  => null,
 				'id'    => null,
-				'class' => ''
+				'class' => '',
+				'title' => ''
 			), $atts );
 
 			if ( isset( $atts['slug'] ) || isset( $atts['id'] ) ) {
