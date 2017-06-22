@@ -30,9 +30,9 @@ if ( ! class_exists( 'UCF_Section_Common' ) ) {
 
 			if ( $section ) {
 
-				$before = self::ucf_section_display_before( $section );
+				$before = self::ucf_section_display_before( $section, $class );
 				if ( has_filter( 'ucf_section_display_before' ) ) {
-					$before = apply_filters( 'ucf_section_display_before', $before, $section );
+					$before = apply_filters( 'ucf_section_display_before', $before, $section, $class );
 				}
 
 				$content = self::ucf_section_display( $section );
@@ -63,10 +63,12 @@ if ( ! class_exists( 'UCF_Section_Common' ) ) {
 		 *
 		 * @return string | The html to be appended to output.
 		 **/
-		public static function ucf_section_display_before( $section ) {
+		public static function ucf_section_display_before( $section, $class ) {
+			$class = ! empty( $class ) ? ' class="' . $class . '"' : '';
+
 			ob_start();
 		?>
-			<section id="ucf-section-<?php echo $section->post_name; ?>">
+			<section id="ucf-section-<?php echo $section->post_name; ?>"<?php echo $class; ?>>
 		<?php
 			return ob_get_clean();
 		}
