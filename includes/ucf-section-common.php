@@ -19,6 +19,7 @@ if ( ! class_exists( 'UCF_Section_Common' ) ) {
 		public static function display_section( $attr ) {
 			$retval = '';
 			$section = null;
+			$class = '';
 
 			if ( isset( $attr['slug'] ) ) {
 				$section = self::get_section_by_slug( $attr['slug'] );
@@ -26,6 +27,10 @@ if ( ! class_exists( 'UCF_Section_Common' ) ) {
 
 			if ( isset( $attr['id'] ) ) {
 				$section = get_post( $attr['id'] );
+			}
+
+			if  ( isset( $attr['class'] ) ) {
+				$class = $attr['class'];
 			}
 
 			if ( $section ) {
@@ -60,6 +65,7 @@ if ( ! class_exists( 'UCF_Section_Common' ) ) {
 		 * @since 1.0.0
 		 *
 		 * @param $section WP_Post object | The section
+		 * @param $class string | The string of css classes
 		 *
 		 * @return string | The html to be appended to output.
 		 **/
