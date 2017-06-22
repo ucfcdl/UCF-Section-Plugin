@@ -21,7 +21,7 @@ if ( ! class_exists( 'UCF_Section_Common' ) ) {
 			$section = null;
 			$class = '';
 			$title = '';
-			$disable_id = false;
+			$section_id = '';
 
 			if ( isset( $attr['slug'] ) ) {
 				$section = self::get_section_by_slug( $attr['slug'] );
@@ -39,15 +39,15 @@ if ( ! class_exists( 'UCF_Section_Common' ) ) {
 				$title = $attr['title'];
 			}
 
-			if ( isset( $attr['disable_id'] ) ) {
-				$disable_id = filter_var( $attr['disable_id'], FILTER_VALIDATE_BOOLEAN );
+			if ( isset( $attr['section_id'] ) ) {
+				$section_id = $attr['section_id'];
 			}
 
 			if ( $section ) {
 
-				$before = self::ucf_section_display_before( $section, $class, $title, $disable_id );
+				$before = self::ucf_section_display_before( $section, $class, $title, $section_id );
 				if ( has_filter( 'ucf_section_display_before' ) ) {
-					$before = apply_filters( 'ucf_section_display_before', $before, $section, $class, $title, $disable_id );
+					$before = apply_filters( 'ucf_section_display_before', $before, $section, $class, $title, $section_id );
 				}
 
 				$content = self::ucf_section_display( $section );
@@ -77,14 +77,14 @@ if ( ! class_exists( 'UCF_Section_Common' ) ) {
 		 * @param $section WP_Post object | The section
 		 * @param $class string | The string of css classes
 		 * @param $title string | The title to display in the section menu
-		 * @param $disable_id boolean | If true, ID will be auto generated from post_name
+		 * @param $section_id string | the id to assign to the section
 		 *
 		 * @return string | The html to be appended to output.
 		 **/
-		public static function ucf_section_display_before( $section, $class, $title, $disable_id ) {
+		public static function ucf_section_display_before( $section, $class, $title, $section_id ) {
 			$class = ! empty( $class ) ? ' class="' . $class . '"' : '';
 			$title = ! empty( $title ) ? ' data-section-link-title="' . $title . '"' : '';
-			$id = $disable_id ? '' : ' id="ucf-section-' . $section->post_name . '"';
+			$id = ! empty( $section_id ) ? ' id="' . $section_id . '"' : '';
 
 			ob_start();
 		?>
