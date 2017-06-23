@@ -9,8 +9,11 @@ if ( ! class_exists( 'UCF_Section_Shortcode' ) ) {
 	class UCF_Section_Shortcode {
 		public static function shortcode( $atts ) {
 			$atts = shortcode_atts( array(
-				'slug'  => null,
-				'id'    => null
+				'slug'       => null,
+				'id'         => null,
+				'class'      => '',
+				'title'      => '',
+				'section_id' => ''
 			), $atts );
 
 			if ( isset( $atts['slug'] ) || isset( $atts['id'] ) ) {

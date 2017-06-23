@@ -19,6 +19,9 @@ if ( ! class_exists( 'UCF_Section_Common' ) ) {
 		public static function display_section( $attr ) {
 			$retval = '';
 			$section = null;
+			$class = '';
+			$title = '';
+			$section_id = '';
 
 			if ( isset( $attr['slug'] ) ) {
 				$section = self::get_section_by_slug( $attr['slug'] );
@@ -28,11 +31,23 @@ if ( ! class_exists( 'UCF_Section_Common' ) ) {
 				$section = get_post( $attr['id'] );
 			}
 
+			if  ( isset( $attr['class'] ) ) {
+				$class = $attr['class'];
+			}
+
+			if ( isset( $attr['title'] ) ) {
+				$title = $attr['title'];
+			}
+
+			if ( isset( $attr['section_id'] ) ) {
+				$section_id = $attr['section_id'];
+			}
+
 			if ( $section ) {
 
-				$before = self::ucf_section_display_before( $section );
+				$before = self::ucf_section_display_before( $section, $class, $title, $section_id );
 				if ( has_filter( 'ucf_section_display_before' ) ) {
-					$before = apply_filters( 'ucf_section_display_before', $before, $section );
+					$before = apply_filters( 'ucf_section_display_before', $before, $section, $class, $title, $section_id );
 				}
 
 				$content = self::ucf_section_display( $section );
@@ -60,13 +75,20 @@ if ( ! class_exists( 'UCF_Section_Common' ) ) {
 		 * @since 1.0.0
 		 *
 		 * @param $section WP_Post object | The section
+		 * @param $class string | The string of css classes
+		 * @param $title string | The title to display in the section menu
+		 * @param $section_id string | the id to assign to the section
 		 *
 		 * @return string | The html to be appended to output.
 		 **/
-		public static function ucf_section_display_before( $section ) {
+		public static function ucf_section_display_before( $section, $class, $title, $section_id ) {
+			$class = ! empty( $class ) ? ' class="' . $class . '"' : '';
+			$title = ! empty( $title ) ? ' data-section-link-title="' . $title . '"' : '';
+			$id = ! empty( $section_id ) ? ' id="' . $section_id . '"' : '';
+
 			ob_start();
 		?>
-			<section id="ucf-section-<?php echo $section->post_name; ?>">
+			<section<?php echo $id; ?><?php echo $class; ?>>
 		<?php
 			return ob_get_clean();
 		}
