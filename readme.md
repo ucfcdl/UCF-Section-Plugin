@@ -24,6 +24,12 @@ The ucf-section shortcode has one option:
 
 ## Changelog ##
 
+### 1.0.3 ###
+Enhancements:
+* Added the ability to add css classes to the section wrapper.
+* Added the ability to define the id of the section wrapper.
+* Added the ability to add a title to the section wrapper (which can be used in templates to define the menu text).
+
 ### 1.0.2 ###
 Bug Fixes:
 * Corrects incorrect sections being returned when providing a slug instead of an id.
