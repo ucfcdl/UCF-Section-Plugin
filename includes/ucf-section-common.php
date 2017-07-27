@@ -16,48 +16,50 @@ if ( ! class_exists( 'UCF_Section_Common' ) ) {
 		 *
 		 * @return string | The output of the section content.
 		 **/
-		public static function display_section( $attr ) {
+		public static function display_section( $atts, $content ) {
 			$retval = '';
-			$section = null;
 			$class = '';
 			$title = '';
 			$section_id = '';
 
-			if ( isset( $attr['slug'] ) ) {
-				$section = self::get_section_by_slug( $attr['slug'] );
+
+			if ( isset( $atts['slug'] ) ) {
+				$post_object = self::get_section_by_slug( $atts['slug'] );
+				$content = ( $post_object ) ? $post_object->post_content : '';
 			}
 
-			if ( isset( $attr['id'] ) ) {
-				$section = get_post( $attr['id'] );
+			if ( isset( $atts['id'] ) ) {
+				$post_object = get_post( $atts['id'] );
+				$content = ( $post_object ) ? $post_object->post_content : '';
 			}
 
-			if  ( isset( $attr['class'] ) ) {
-				$class = $attr['class'];
+			if  ( isset( $atts['class'] ) ) {
+				$class = $atts['class'];
 			}
 
-			if ( isset( $attr['title'] ) ) {
-				$title = $attr['title'];
+			if ( isset( $atts['title'] ) ) {
+				$title = $atts['title'];
 			}
 
-			if ( isset( $attr['section_id'] ) ) {
-				$section_id = $attr['section_id'];
+			if ( isset( $atts['section_id'] ) ) {
+				$section_id = $atts['section_id'];
 			}
 
-			if ( $section ) {
+			if ( $content ) {
 
-				$before = self::ucf_section_display_before( $section, $class, $title, $section_id );
+				$before = self::ucf_section_display_before( $content, $class, $title, $section_id );
 				if ( has_filter( 'ucf_section_display_before' ) ) {
-					$before = apply_filters( 'ucf_section_display_before', $before, $section, $class, $title, $section_id );
+					$before = apply_filters( 'ucf_section_display_before', $before, $content, $class, $title, $section_id );
 				}
 
-				$content = self::ucf_section_display( $section );
+				$content = self::ucf_section_display( $content, $class, $title, $section_id );
 				if ( has_filter( 'ucf_section_display' ) ) {
-					$content = apply_filters( 'ucf_section_display', $content, $section );
+					$content = apply_filters( 'ucf_section_display', $content, $class, $title, $section_id );
 				}
 
-				$after = self::ucf_section_display_after( $section );
+				$after = self::ucf_section_display_after( $content );
 				if ( has_filter( 'ucf_section_display_after' ) ) {
-					$after = apply_filters( 'ucf_section_display_after', $after, $section );
+					$after = apply_filters( 'ucf_section_display_after', $after, $content );
 				}
 
 				$retval = $before . $content . $after;
@@ -81,7 +83,7 @@ if ( ! class_exists( 'UCF_Section_Common' ) ) {
 		 *
 		 * @return string | The html to be appended to output.
 		 **/
-		public static function ucf_section_display_before( $section, $class, $title, $section_id ) {
+		public static function ucf_section_display_before( $content, $class, $title, $section_id ) {
 			$class = ! empty( $class ) ? ' class="' . $class . '"' : '';
 			$title = ! empty( $title ) ? ' data-section-link-title="' . $title . '"' : '';
 			$id = ! empty( $section_id ) ? ' id="' . $section_id . '"' : '';
@@ -105,11 +107,9 @@ if ( ! class_exists( 'UCF_Section_Common' ) ) {
 		 *
 		 * @return string | The html to be appended to output.
 		 **/
-		public static function ucf_section_display( $section ) {
+		public static function ucf_section_display( $content ) {
 			ob_start();
-		?>
-			<?php echo apply_filters( 'the_content', $section->post_content ); ?>
-		<?php
+			echo $content;
 			return ob_get_clean();
 		}
 
@@ -125,7 +125,7 @@ if ( ! class_exists( 'UCF_Section_Common' ) ) {
 		 *
 		 * @return string | The html to be appended to output.
 		 **/
-		public static function ucf_section_display_after( $section ) {
+		public static function ucf_section_display_after( $content ) {
 			ob_start();
 		?>
 			</section>

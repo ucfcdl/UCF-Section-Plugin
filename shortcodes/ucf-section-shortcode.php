@@ -7,7 +7,7 @@
 
 if ( ! class_exists( 'UCF_Section_Shortcode' ) ) {
 	class UCF_Section_Shortcode {
-		public static function shortcode( $atts ) {
+		public static function shortcode( $atts, $content = null ) {
 			$atts = shortcode_atts( array(
 				'slug'       => null,
 				'id'         => null,
@@ -16,11 +16,7 @@ if ( ! class_exists( 'UCF_Section_Shortcode' ) ) {
 				'section_id' => ''
 			), $atts );
 
-			if ( isset( $atts['slug'] ) || isset( $atts['id'] ) ) {
-				return UCF_Section_Common::display_section( $atts );
-			}
-
-			return '';
+			return UCF_Section_Common::display_section( $atts, $content );
 		}
 	}
 	add_shortcode( 'ucf-section', array( 'UCF_Section_Shortcode', 'shortcode' ) );
