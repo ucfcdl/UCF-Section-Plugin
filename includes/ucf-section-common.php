@@ -185,8 +185,10 @@ if ( ! class_exists( 'UCF_Section_Common' ) ) {
 			global $post;
 
 			wp_enqueue_style( 'section-styles', plugins_url( 'static/css/empty.css', UCF_SECTION__PLUGIN_FILE ) );
+			wp_enqueue_script( 'section-scripts', plugins_url( 'static/js/empty.js', UCF_SECTION__PLUGIN_FILE ), array( 'jquery' ), null, TRUE );
 
 			$styles_to_print = array();
+			$scripts_to_print = array();
 
 			if ( has_shortcode( $post->post_content, 'ucf-section' ) ) {
 				$pattern = get_shortcode_regex( array( 'ucf-section' ) );
@@ -215,6 +217,12 @@ if ( ! class_exists( 'UCF_Section_Common' ) ) {
 							if ( $stylesheet_id && ! key_exists( $styles_to_print, $stylesheet_id ) ) {
 								$styles_to_print[$stylesheet_id] = $stylesheet_id;
 							}
+
+							$javascript_id = get_post_meta( $section->ID, 'ucf_section_javascript', TRUE );
+
+							if ( $javascript_id && ! key_exists( $scripts_to_print, $javascript_id ) ) {
+								$scripts_to_print[$javascript_id] = $javascript_id;
+							}
 						}
 					}
 				}
@@ -222,6 +230,11 @@ if ( ! class_exists( 'UCF_Section_Common' ) ) {
 				// Go ahead and print each stylesheet
 				foreach( $styles_to_print as $id ) {
 					self::print_stylesheet_to_head( $id );
+				}
+
+				// Go ahead and print each javascript
+				foreach( $scripts_to_print as $id ) {
+					self::print_javascript_to_footer( $id );
 				}
 			}
 		}
@@ -232,11 +245,24 @@ if ( ! class_exists( 'UCF_Section_Common' ) ) {
 		 * @since 1.0.4
 		 * @param int $stylesheet_id | The ID of the stylesheet to print
 		 **/
-		private static function print_stylesheet_to_head( $stylesheet_id=19961 ) {
+		private static function print_stylesheet_to_head( $stylesheet_id ) {
 			$style_filepath = get_attached_file( $stylesheet_id );
 			$contents = file_get_contents( $style_filepath );
 
 			wp_add_inline_style( 'section-styles', $contents );
+		}
+
+		/**
+		 * Retrieves the javascript and prints it to the footer
+		 * @author Jim Barnes
+		 * @since 1.0.4
+		 * @param int $stylesheet_id | The ID of the stylesheet to print
+		 **/
+		private static function print_javascript_to_footer( $javascript_id ) {
+			$script_filepath = get_attached_file( $javascript_id );
+			$contents = file_get_contents( $script_filepath );
+
+			wp_add_inline_script( 'section-scripts', $contents );
 		}
 	}
 
