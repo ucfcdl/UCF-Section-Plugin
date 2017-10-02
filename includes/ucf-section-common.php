@@ -173,7 +173,74 @@ if ( ! class_exists( 'UCF_Section_Common' ) ) {
 			$rep = preg_replace( "/(<p>)?\[\/($block)](<\/p>|<br \/>)?/", "[/$2]", $rep );
 			return $rep;
 		}
+
+		/**
+		 * Called by the wp_head filter
+		 * Determines if a section has a stylesheet to print
+		 * into the head of the document
+		 * @author Jim Barnes
+		 * @since 1.0.1
+		 **/
+		public static function get_section_stylesheets() {
+			global $post;
+
+			wp_enqueue_style( 'section-styles', plugins_url( 'static/css/empty.css', UCF_SECTION__PLUGIN_FILE ) );
+
+			$styles_to_print = array();
+
+			if ( has_shortcode( $post->post_content, 'ucf-section' ) ) {
+				$pattern = get_shortcode_regex( array( 'ucf-section' ) );
+
+				preg_match_all( '/' . $pattern . '/s', $post->post_content, $matches );
+
+				if ( preg_match_all( '/' . $pattern . '/s', $post->post_content, $matches ) &&
+					array_key_exists( 3, $matches ) ) {
+
+					foreach( $matches[3] as $match ) {
+						$args = shortcode_parse_atts( $match );
+
+						$section = null;
+
+						if ( isset( $args['slug'] ) ) {
+							$section = self::get_section_by_slug( $args['slug'] );
+						}
+
+						if ( isset( $args['id'] ) ) {
+							$section = get_post( $args['id'] );
+						}
+
+						if ( $section !== null ) {
+							$stylesheet_id = get_post_meta( $section->ID, 'ucf_section_stylesheet', TRUE );
+
+							if ( $stylesheet_id && ! key_exists( $styles_to_print, $stylesheet_id ) ) {
+								$styles_to_print[$stylesheet_id] = $stylesheet_id;
+							}
+						}
+					}
+				}
+
+				// Go ahead and print each stylesheet
+				foreach( $styles_to_print as $id ) {
+					self::print_stylesheet_to_head( $id );
+				}
+			}
+		}
+
+		/**
+		 * Retrieves the stylesheet and prints it to head
+		 * @author Jim Barnes
+		 * @since 1.0.4
+		 * @param int $stylesheet_id | The ID of the stylesheet to print
+		 **/
+		private static function print_stylesheet_to_head( $stylesheet_id=19961 ) {
+			$style_filepath = get_attached_file( $stylesheet_id );
+			$contents = file_get_contents( $style_filepath );
+
+			wp_add_inline_style( 'section-styles', $contents );
+		}
 	}
+
+	add_action( 'wp_enqueue_scripts', array( 'UCF_Section_Common', 'get_section_stylesheets' ) );
 }
 
 ?>
