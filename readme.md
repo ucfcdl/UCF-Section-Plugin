@@ -24,6 +24,12 @@ The ucf-section shortcode has one option:
 
 ## Changelog ##
 
+### 1.0.4 ###
+Enhancements:
+* Added stylesheet and javascript field for sections
+* Added mechanism for enqueuing the stylesheets to section specific tags in the head
+* Added mechanism for enqueuing the javascripts to section specific tags in the footer
+
 ### 1.0.3 ###
 Enhancements:
 * Added the ability to add css classes to the section wrapper.
