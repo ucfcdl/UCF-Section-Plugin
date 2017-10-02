@@ -184,8 +184,8 @@ if ( ! class_exists( 'UCF_Section_Common' ) ) {
 		public static function get_section_stylesheets() {
 			global $post;
 
-			wp_enqueue_style( 'section-styles', plugins_url( 'static/css/empty.css', UCF_SECTION__PLUGIN_FILE ) );
-			wp_enqueue_script( 'section-scripts', plugins_url( 'static/js/empty.js', UCF_SECTION__PLUGIN_FILE ), array( 'jquery' ), null, TRUE );
+			wp_enqueue_style( 'ucf-section-styles', plugins_url( 'static/css/empty.css', UCF_SECTION__PLUGIN_FILE ) );
+			wp_enqueue_script( 'ucf-section-scripts', plugins_url( 'static/js/empty.js', UCF_SECTION__PLUGIN_FILE ), array( 'jquery' ), null, TRUE );
 
 			$styles_to_print = array();
 			$scripts_to_print = array();
@@ -243,26 +243,26 @@ if ( ! class_exists( 'UCF_Section_Common' ) ) {
 		 * Retrieves the stylesheet and prints it to head
 		 * @author Jim Barnes
 		 * @since 1.0.4
-		 * @param int $stylesheet_id | The ID of the stylesheet to print
+		 * @param int $stylesheet_id The ID of the stylesheet to print
 		 **/
 		private static function print_stylesheet_to_head( $stylesheet_id ) {
 			$style_filepath = get_attached_file( $stylesheet_id );
 			$contents = file_get_contents( $style_filepath );
 
-			wp_add_inline_style( 'section-styles', $contents );
+			wp_add_inline_style( 'ucf-section-styles', $contents );
 		}
 
 		/**
 		 * Retrieves the javascript and prints it to the footer
 		 * @author Jim Barnes
 		 * @since 1.0.4
-		 * @param int $stylesheet_id | The ID of the stylesheet to print
+		 * @param int $stylesheet_id The ID of the stylesheet to print
 		 **/
 		private static function print_javascript_to_footer( $javascript_id ) {
 			$script_filepath = get_attached_file( $javascript_id );
 			$contents = file_get_contents( $script_filepath );
 
-			wp_add_inline_script( 'section-scripts', $contents );
+			wp_add_inline_script( 'ucf-section-scripts', $contents );
 		}
 	}
 
