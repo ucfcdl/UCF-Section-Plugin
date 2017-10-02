@@ -173,7 +173,142 @@ if ( ! class_exists( 'UCF_Section_Common' ) ) {
 			$rep = preg_replace( "/(<p>)?\[\/($block)](<\/p>|<br \/>)?/", "[/$2]", $rep );
 			return $rep;
 		}
+
+		/**
+		 * Returns all the sections found within the current $post's content
+		 * @author Jo Dickson
+		 * @since 1.0.4
+		 * @return array | Array of section WP_Post objects
+		 **/
+		public static function get_post_sections() {
+			global $post;
+			$sections = array();
+
+			if ( has_shortcode( $post->post_content, 'ucf-section' ) ) {
+				$pattern = get_shortcode_regex( array( 'ucf-section' ) );
+
+				preg_match_all( '/' . $pattern . '/s', $post->post_content, $matches );
+
+				if ( preg_match_all( '/' . $pattern . '/s', $post->post_content, $matches ) &&
+					array_key_exists( 3, $matches ) ) {
+
+					foreach( $matches[3] as $match ) {
+						$args = shortcode_parse_atts( $match );
+
+						$section = null;
+
+						if ( isset( $args['slug'] ) ) {
+							$section = self::get_section_by_slug( $args['slug'] );
+						}
+
+						if ( isset( $args['id'] ) ) {
+							$section = get_post( $args['id'] );
+						}
+
+						if ( $section !== null ) {
+							$sections[] = $section;
+						}
+
+					}
+
+				}
+			}
+
+			return $sections;
+		}
+
+		/**
+		 * Returns all the inline styles to print for all sections found within
+		 * the current $post's content
+		 * @author Jo Dickson
+		 * @since 1.0.4
+		 * @return array | array of styles; keys correspond to attachment IDs, values consist of stylesheet file contents
+		 **/
+		public static function get_post_section_styles() {
+			$styles_to_print = array();
+			$sections = self::get_post_sections();
+			if ( $sections ) {
+				foreach ( $sections as $section ) {
+					$stylesheet_id = get_post_meta( $section->ID, 'ucf_section_stylesheet', TRUE );
+					$style_filepath = get_attached_file( $stylesheet_id );
+					$style_contents = '';
+					if ( $style_filepath ) {
+						$style_contents = file_get_contents( $style_filepath );
+					}
+
+					if ( $stylesheet_id && $style_contents && ! key_exists( $stylesheet_id, $styles_to_print ) ) {
+						$styles_to_print[$stylesheet_id] = $style_contents;
+					}
+				}
+			}
+			return $styles_to_print;
+		}
+
+		/**
+		 * Returns all the inline scripts to print for all sections found
+		 * within the current $post's content
+		 * @author Jo Dickson
+		 * @since 1.0.4
+		 * @return array | array of scripts; keys correspond to attachment IDs, values consist of javascript file contents
+		 **/
+		public static function get_post_section_javascript() {
+			$scripts_to_print = array();
+			$sections = self::get_post_sections();
+			if ( $sections ) {
+				foreach ( $sections as $section ) {
+					$javascript_id = get_post_meta( $section->ID, 'ucf_section_javascript', TRUE );
+					$javascript_filepath = get_attached_file( $javascript_id );
+					$javascript_contents = '';
+					if ( $javascript_filepath ) {
+						$javascript_contents = file_get_contents( $javascript_filepath );
+					}
+
+					if ( $javascript_id && $javascript_contents && ! key_exists( $javascript_id, $scripts_to_print ) ) {
+						$scripts_to_print[$javascript_id] = $javascript_contents;
+					}
+				}
+			}
+			return $scripts_to_print;
+		}
+
+		/**
+		 * To be called by wp_head. Prints all relevant section styles for the
+		 * current $post
+		 * @author Jo Dickson
+		 * @since 1.0.4
+		 * @return void
+		 **/
+		public static function add_inline_section_styles() {
+			$styles_to_print = self::get_post_section_styles();
+
+			if ( $styles_to_print ) {
+				foreach ( $styles_to_print as $stylesheet_id => $styles ) {
+					echo '<style id="section-css-' . $stylesheet_id . '">' . $styles . '</style>';
+				}
+			}
+		}
+
+		/**
+		 * To be called by wp_footer. Prints all relevant section scripts for
+		 * the current $post
+		 * @author Jo Dickson
+		 * @since 1.0.4
+		 * @return void
+		 **/
+		public static function add_inline_section_javascript() {
+			$scripts_to_print = self::get_post_section_javascript();
+
+			if ( $scripts_to_print ) {
+				foreach ( $scripts_to_print as $javascript_id => $script ) {
+					echo '<script id="section-js-' . $javascript_id . '">' . $script . '</script>';
+				}
+			}
+		}
+
 	}
+
+	add_action( 'wp_head', array( 'UCF_Section_Common', 'add_inline_section_styles' ), 99 );
+	add_action( 'wp_footer', array( 'UCF_Section_Common', 'add_inline_section_javascript' ), 99 );
 }
 
 ?>
