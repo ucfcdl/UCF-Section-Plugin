@@ -21,6 +21,144 @@ if ( ! class_exists( 'UCF_Section_PostType' ) ) {
 				)
 			);
 			register_post_type( 'ucf_section', self::args( $labels ) );
+			add_action( 'add_meta_boxes', array( 'UCF_Section_PostType', 'register_metabox' ) );
+			add_action( 'save_post', array( 'UCF_Section_PostType', 'save_metabox' ) );
+		}
+
+		/**
+		 * Adds the UCF Section Assets metabox
+		 * @author Jim Barnes
+		 * @since 1.0.4
+		 **/
+		public static function register_metabox() {
+			add_meta_box(
+				'ucf_section_metabox',
+				'UCF Section Fields',
+				array( 'UCF_Section_PostType', 'register_fields' ),
+				'ucf_section',
+				'normal',
+				'low'
+			);
+		}
+
+		/**
+		 * The markup callback for the UCF Section Assets metabox
+		 * @author Jim Barnes
+		 * @since 1.0.4
+		 * @param $post WP_Post | The current post object
+		 * @return string | The function output is echoed
+		 **/
+		public static function register_fields( $post ) {
+			wp_nonce_field( 'ucf_section_nonce_save', 'ucf_section_nonce' );
+			$upload_link = esc_url( get_upload_iframe_src( 'media', $post->ID ) );
+
+			$stylesheet     = get_post_meta( $post->ID, 'ucf_section_stylesheet', TRUE );
+			$stylesheet_url = wp_get_attachment_url( $stylesheet );
+			$javascript     = get_post_meta( $post->ID, 'ucf_section_javascript', TRUE );
+			$javascript_url = wp_get_attachment_url( $javascript );
+
+				// Existing asset IDs are invalid if the attachment URL can't be retrieved
+				// (e.g. if the attachment was deleted)
+			if ( ! $stylesheet_url ) {
+				$stylesheet = null;
+			}
+
+			if ( ! $javascript_url ) {
+				$javascript = null;
+			}
+?>
+			<table class="form-table">
+				<tbody>
+					<tr>
+						<th><strong>Custom Stylesheet</strong></th>
+						<td>
+							<div class="css-preview meta-file-wrap <?php if ( ! $stylesheet ) { echo 'hidden'; }?>">
+								<span class="dashicons dashicons-media-code"></span>
+								<span id="ucf_section_css_filename"><?php if ( $stylesheet_url ) { echo basename( $stylesheet_url ); }?></span>
+							</div>
+							<p class="hide-if-no-js">
+								<a class="css-upload meta-file-upload <?php if ( $stylesheet ) { echo 'hidden'; }?>" href="<?php echo $upload_link; ?>">
+									Add File
+								</a>
+								<a class="css-remove meta-file-upload <?php if ( !$stylesheet ) { echo 'hidden'; }?>" href="#">
+									Remove File
+								</a>
+							</p>
+							<input class="meta-file-field" id="ucf_section_stylesheet" name="ucf_section_stylesheet" type="hidden" value="<?php if ( $stylesheet ) { echo htmlentities( $stylesheet ); } ?>">
+						</td>
+					</tr>
+					<tr>
+						<th><strong>Custom JavaScript</strong></th>
+						<td>
+							<div class="js-preview meta-file-wrap <?php if ( ! $javascript ) { echo 'hidden'; }?>">
+								<span class="dashicons dashicons-media-code"></span>
+								<span id="ucf_section_js_filename"><?php if ( $javascript_url ) { echo basename( $javascript_url ); } ?></span>
+							</div>
+							<p class="hide-if-no-js">
+								<a class="js-upload meta-file-upload <?php if ( $javascript ) { echo 'hidden'; }?>" href="<?php echo $upload_link; ?>">
+									Add File
+								</a>
+								<a class="js-remove meta-file-upload <?php if ( !$javascript ) { echo 'hidden'; }?>" href="#">
+									Remove File
+								</a>
+							</p>
+
+							<input class="meta-file-field" id="ucf_section_javascript" name="ucf_section_javascript" type="hidden" value="<?php if ( $javascript ) { echo htmlentities( $javascript ); } ?>">
+						<td>
+					</tr>
+				</tbody>
+			</table>
+<?php
+		}
+
+		/**
+		 * Enqueue admin assets
+		 * @author Jim Barnes
+		 * @since 1.0.4
+		 **/
+		public static function enqueue_admin_assets( $hook ) {
+			global $post;
+
+			if ( $hook === 'post-new.php' || $hook === 'post.php' ) {
+				if ( 'ucf_section' === $post->post_type ) {
+					wp_enqueue_script(
+						'ucf_section_admin_script',
+						plugins_url( 'static/js/ucf-section-admin.min.js', UCF_SECTION__PLUGIN_FILE ),
+						array( 'jquery' ),
+						null,
+						true
+					);
+				}
+			}
+		}
+
+		/**
+		 * Saves the data from the metabox
+		 * @author Jim Barnes
+		 * @since 1.0.4
+		 **/
+		public static function save_metabox( $post_id ) {
+			$post_type = get_post_type( $post_id );
+
+			// If not a ucf_section post, return.
+			if ( $post_type !== 'ucf_section' ) return;
+
+			// If the nonce is not present or is invalid return.
+			if (
+				! isset( $_POST['ucf_section_nonce'] )
+				|| ! wp_verify_nonce( $_POST['ucf_section_nonce'], 'ucf_section_nonce_save' )
+			) return;
+
+			$stylesheet = isset( $_POST['ucf_section_stylesheet'] ) ? intval( $_POST['ucf_section_stylesheet'] ) : null;
+			$javascript = isset( $_POST['ucf_section_javascript'] ) ? intval( $_POST['ucf_section_javascript'] ) : null;
+
+			if ( ! add_post_meta( $post_id, 'ucf_section_stylesheet', $stylesheet, true ) ) {
+				update_post_meta( $post_id, 'ucf_section_stylesheet', $stylesheet );
+			}
+
+			if ( ! add_post_meta( $post_id, 'ucf_section_javascript', $javascript, true ) ) {
+				update_post_meta( $post_id, 'ucf_section_javascript', $javascript );
+			}
 		}
 
 		/**
@@ -118,6 +256,7 @@ if ( ! class_exists( 'UCF_Section_PostType' ) ) {
 	}
 
 	/** Register the post type on init */
-    add_action( 'init', array( 'UCF_Section_PostType', 'register' ), 10, 0 );
+	add_action( 'init', array( 'UCF_Section_PostType', 'register' ), 10, 0 );
+	add_action( 'admin_enqueue_scripts', array( 'UCF_Section_PostType', 'enqueue_admin_assets' ), 99, 1 );
 }
 ?>
