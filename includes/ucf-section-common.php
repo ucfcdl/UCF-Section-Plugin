@@ -19,7 +19,7 @@ if ( ! class_exists( 'UCF_Section_Common' ) ) {
 		public static function display_section( $attr ) {
 			$retval = '';
 			$section = null;
-			$class = '';
+			$class = array( 'ucf-section' );
 			$title = '';
 			$section_id = '';
 
@@ -31,19 +31,21 @@ if ( ! class_exists( 'UCF_Section_Common' ) ) {
 				$section = get_post( $attr['id'] );
 			}
 
-			if  ( isset( $attr['class'] ) ) {
-				$class = $attr['class'];
-			}
-
-			if ( isset( $attr['title'] ) ) {
-				$title = $attr['title'];
-			}
-
-			if ( isset( $attr['section_id'] ) ) {
-				$section_id = $attr['section_id'];
-			}
-
 			if ( $section ) {
+
+				$class[] = 'ucf-section-' . $section->post_name;
+				if ( isset( $attr['class'] ) ) {
+					$class = array_unique( array_merge( $class, explode( ' ', $attr['class'] ) ) );
+				}
+				$class = implode( ' ', $class );
+
+				if ( isset( $attr['title'] ) ) {
+					$title = $attr['title'];
+				}
+
+				if ( isset( $attr['section_id'] ) ) {
+					$section_id = $attr['section_id'];
+				}
 
 				$before = self::ucf_section_display_before( $section, $class, $title, $section_id );
 				if ( has_filter( 'ucf_section_display_before' ) ) {
@@ -61,6 +63,7 @@ if ( ! class_exists( 'UCF_Section_Common' ) ) {
 				}
 
 				$retval = $before . $content . $after;
+
 			}
 
 			return $retval;
@@ -82,7 +85,7 @@ if ( ! class_exists( 'UCF_Section_Common' ) ) {
 		 * @return string | The html to be appended to output.
 		 **/
 		public static function ucf_section_display_before( $section, $class, $title, $section_id ) {
-			$class = ! empty( $class ) ? ' class="' . $class . '"' : '';
+			$class = ' class="' . $class . '"';
 			$title = ! empty( $title ) ? ' data-section-link-title="' . $title . '" role="region" aria-label="' . $title . '"' : '';
 			$id = ! empty( $section_id ) ? ' id="' . $section_id . '"' : '';
 
