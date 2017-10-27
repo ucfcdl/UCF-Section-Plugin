@@ -86,12 +86,12 @@ if ( ! class_exists( 'UCF_Section_Common' ) ) {
 		 **/
 		public static function ucf_section_display_before( $section, $class, $title, $section_id ) {
 			$class = ' class="' . $class . '"';
-			$title = ! empty( $title ) ? ' data-section-link-title="' . $title . '"' : '';
+			$title = ! empty( $title ) ? ' data-section-link-title="' . $title . '" role="region" aria-label="' . $title . '"' : '';
 			$id = ! empty( $section_id ) ? ' id="' . $section_id . '"' : '';
 
 			ob_start();
 		?>
-			<section<?php echo $id; ?><?php echo $class; ?>>
+			<section<?php echo $id; ?><?php echo $class; ?><?php echo $title; ?>>
 		<?php
 			return ob_get_clean();
 		}
