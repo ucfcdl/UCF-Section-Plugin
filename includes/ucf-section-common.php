@@ -187,7 +187,10 @@ if ( ! class_exists( 'UCF_Section_Common' ) ) {
 			global $post;
 			$sections = array();
 
-			if ( has_shortcode( $post->post_content, 'ucf-section' ) ) {
+			if ( $post->post_type == 'ucf_section' ) {
+				$sections[] = $post;
+			}
+			else if ( has_shortcode( $post->post_content, 'ucf-section' ) ) {
 				$pattern = get_shortcode_regex( array( 'ucf-section' ) );
 
 				preg_match_all( '/' . $pattern . '/s', $post->post_content, $matches );
