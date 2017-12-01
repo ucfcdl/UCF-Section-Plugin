@@ -19,7 +19,7 @@ if ( ! class_exists( 'UCF_Section_Common' ) ) {
 		public static function display_section( $attr ) {
 			$retval = '';
 			$section = null;
-			$class = '';
+			$class = array( 'ucf-section' );
 			$title = '';
 			$section_id = '';
 
@@ -31,19 +31,21 @@ if ( ! class_exists( 'UCF_Section_Common' ) ) {
 				$section = get_post( $attr['id'] );
 			}
 
-			if  ( isset( $attr['class'] ) ) {
-				$class = $attr['class'];
-			}
-
-			if ( isset( $attr['title'] ) ) {
-				$title = $attr['title'];
-			}
-
-			if ( isset( $attr['section_id'] ) ) {
-				$section_id = $attr['section_id'];
-			}
-
 			if ( $section ) {
+
+				$class[] = 'ucf-section-' . $section->post_name;
+				if ( isset( $attr['class'] ) ) {
+					$class = array_unique( array_merge( $class, explode( ' ', $attr['class'] ) ) );
+				}
+				$class = implode( ' ', $class );
+
+				if ( isset( $attr['title'] ) ) {
+					$title = $attr['title'];
+				}
+
+				if ( isset( $attr['section_id'] ) ) {
+					$section_id = $attr['section_id'];
+				}
 
 				$before = self::ucf_section_display_before( $section, $class, $title, $section_id );
 				if ( has_filter( 'ucf_section_display_before' ) ) {
@@ -61,6 +63,7 @@ if ( ! class_exists( 'UCF_Section_Common' ) ) {
 				}
 
 				$retval = $before . $content . $after;
+
 			}
 
 			return $retval;
@@ -82,13 +85,13 @@ if ( ! class_exists( 'UCF_Section_Common' ) ) {
 		 * @return string | The html to be appended to output.
 		 **/
 		public static function ucf_section_display_before( $section, $class, $title, $section_id ) {
-			$class = ! empty( $class ) ? ' class="' . $class . '"' : '';
-			$title = ! empty( $title ) ? ' data-section-link-title="' . $title . '"' : '';
+			$class = ' class="' . $class . '"';
+			$title = ! empty( $title ) ? ' data-section-link-title="' . $title . '" role="region" aria-label="' . $title . '"' : '';
 			$id = ! empty( $section_id ) ? ' id="' . $section_id . '"' : '';
 
 			ob_start();
 		?>
-			<section<?php echo $id; ?><?php echo $class; ?>>
+			<section<?php echo $id; ?><?php echo $class; ?><?php echo $title; ?>>
 		<?php
 			return ob_get_clean();
 		}
@@ -184,7 +187,10 @@ if ( ! class_exists( 'UCF_Section_Common' ) ) {
 			global $post;
 			$sections = array();
 
-			if ( has_shortcode( $post->post_content, 'ucf-section' ) ) {
+			if ( $post->post_type == 'ucf_section' ) {
+				$sections[] = $post;
+			}
+			else if ( has_shortcode( $post->post_content, 'ucf-section' ) ) {
 				$pattern = get_shortcode_regex( array( 'ucf-section' ) );
 
 				preg_match_all( '/' . $pattern . '/s', $post->post_content, $matches );
