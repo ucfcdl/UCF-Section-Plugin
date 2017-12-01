@@ -3,7 +3,7 @@ Contributors: ucfwebcom
 Tags: ucf, sections
 Requires at least: 4.7.5
 Tested up to: 4.7.5
-Stable Tag: 1.0.3
+Stable Tag: 1.0.5
 License: GPLv3 or later
 License URI: http://www.gnu.org/copyleft/gpl-3.0.html
 
@@ -30,6 +30,15 @@ The ucf-section shortcode has one option:
 
 
 == Changelog ==
+
+= 1.0.5 =
+Enhancements:
+* Added unique classes to sections
+* Added `role` and `aria-label` attributes to sections that provide a title
+* Updated `UCF_Section_Common::get_post_sections()` to use the current `$post` object if `$post` is a section, allowing section-specific css/js to be loaded in `single-ucf_section.php` theme templates.
+
+Bugfixes:
+* Added missing `data-section-link-title` attributes to sections for compatibility with the Sections Menu Shortcode Plugin.
 
 = 1.0.4 =
 Enhancements:
