@@ -1,8 +1,8 @@
 <?php
 /*
 Plugin Name: UCF Section
-Description:
-Version: 1.0.5
+Description: Provides a shortcode, functions, and default styles for displaying Sections.
+Version: 1.0.6
 Author: UCF Web Communications
 License: GPL3
 */
