@@ -187,6 +187,8 @@ if ( ! class_exists( 'UCF_Section_Common' ) ) {
 			global $post;
 			$sections = array();
 
+			if ( !$post ) { return $sections; } // Abort if $post is not set
+
 			if ( $post->post_type == 'ucf_section' ) {
 				$sections[] = $post;
 			}
