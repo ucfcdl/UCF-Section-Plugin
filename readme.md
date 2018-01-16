@@ -28,6 +28,10 @@ The `[ucf-section]` shortcode has several options:
 
 ## Changelog ##
 
+### 1.0.7 ###
+Bug Fixes:
+* Fixed some notices thrown by `UCF_Section_Common::get_post_sections()` when the global `$post` object is not available (e.g. on category/tag archives, or when a 404 is returned).
+
 ### 1.0.6 ###
 Enhancements:
 * Added missing plugin description
