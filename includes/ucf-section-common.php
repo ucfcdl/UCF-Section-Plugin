@@ -313,10 +313,24 @@ if ( ! class_exists( 'UCF_Section_Common' ) ) {
 			}
 		}
 
+		/**
+		 * Adds media library support for css and js files.
+		 * @author Cadie Brown
+		 * @since 1.0.5
+		 * @param array $mimes | Current array of mime types
+		 * @return array | Updated array of mime types
+		 **/
+		public static function add_custom_mimes( $mimes ) {
+			$mimes['css'] = 'text/css';
+			$mimes['js'] = 'application/javascript';
+			return $mimes;
+		}
+
 	}
 
 	add_action( 'wp_head', array( 'UCF_Section_Common', 'add_inline_section_styles' ), 99 );
 	add_action( 'wp_footer', array( 'UCF_Section_Common', 'add_inline_section_javascript' ), 99 );
+	add_filter( 'upload_mimes', array( 'UCF_Section_Common', 'add_custom_mimes' ) );
 }
 
 ?>
