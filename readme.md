@@ -28,6 +28,10 @@ The `[ucf-section]` shortcode has several options:
 
 ## Changelog ##
 
+### 1.0.9 ###
+Bug Fixes:
+* Disabled archives by default.
+
 ### 1.0.8 ###
 Bug Fixes:
 * Added missing CSS and JS file upload capability out-of-the-box
