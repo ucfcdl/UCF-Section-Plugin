@@ -99,7 +99,7 @@ if ( ! class_exists( 'UCF_Section_Common' ) ) {
 			$title_markup =
 				! empty( $title )
 				? ' data-section-link-title="' . $title . '" aria-label="' . $title . '"'
-				: ' aria-label="' . $title . '"';
+				: '';
 
 			$id_markup =
 				! empty( $section_id )
