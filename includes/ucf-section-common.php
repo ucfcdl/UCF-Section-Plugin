@@ -45,7 +45,7 @@ if ( ! class_exists( 'UCF_Section_Common' ) ) {
 					$pattern = '/<h(\d)(.*)>(.*)<\/h\1>/';
 					$matches = array();
 
-					preg_match( $pattern, $section->post_content );
+					preg_match( $pattern, $section->post_content, $matches );
 
 					if ( $matches ) {
 						$title = $matches[3];
