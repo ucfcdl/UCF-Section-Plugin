@@ -39,8 +39,17 @@ if ( ! class_exists( 'UCF_Section_Common' ) ) {
 				}
 				$class = implode( ' ', $class );
 
-				if ( isset( $attr['title'] ) ) {
+				if ( isset( $attr['title'] ) && ! empty( $attr['title'] ) ) {
 					$title = $attr['title'];
+				} else {
+					$pattern = '/<h(\d)([\s\w":\d-=]*)>(.*)<\/h\1>/';
+					$matches = array();
+
+					preg_match( $pattern, $section->post_content, $matches );
+
+					if ( $matches ) {
+						$title = trim( esc_attr( strip_tags( $matches[3] ) ) );
+					}
 				}
 
 				if ( isset( $attr['section_id'] ) ) {
@@ -86,12 +95,20 @@ if ( ! class_exists( 'UCF_Section_Common' ) ) {
 		 **/
 		public static function ucf_section_display_before( $section, $class, $title, $section_id ) {
 			$class = ' class="' . $class . '"';
-			$title = ! empty( $title ) ? ' data-section-link-title="' . $title . '" role="region" aria-label="' . $title . '"' : '';
-			$id = ! empty( $section_id ) ? ' id="' . $section_id . '"' : '';
+
+			$title_markup =
+				! empty( $title )
+				? ' data-section-link-title="' . $title . '" aria-label="' . $title . '"'
+				: '';
+
+			$id_markup =
+				! empty( $section_id )
+				? ' id="' . $section_id . '"'
+				: '';
 
 			ob_start();
 		?>
-			<section<?php echo $id; ?><?php echo $class; ?><?php echo $title; ?>>
+			<section<?php echo $id_markup; ?><?php echo $class; ?><?php echo $title_markup; ?>>
 		<?php
 			return ob_get_clean();
 		}
