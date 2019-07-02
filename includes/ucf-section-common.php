@@ -49,8 +49,6 @@ if ( ! class_exists( 'UCF_Section_Common' ) ) {
 
 					if ( $matches ) {
 						$title = $matches[3];
-					} else {
-						$title = $section->post_title;
 					}
 				}
 
