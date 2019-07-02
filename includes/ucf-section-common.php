@@ -106,8 +106,6 @@ if ( ! class_exists( 'UCF_Section_Common' ) ) {
 				? ' id="' . $section_id . '"'
 				: '';
 
-			$title_text =
-
 			ob_start();
 		?>
 			<section<?php echo $id_markup; ?><?php echo $class; ?><?php echo $title_markup; ?>>
