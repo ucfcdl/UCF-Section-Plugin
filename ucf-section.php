@@ -2,7 +2,7 @@
 /*
 Plugin Name: UCF Section
 Description: Provides a shortcode, functions, and default styles for displaying Sections.
-Version: 1.0.8
+Version: 1.0.9
 Author: UCF Web Communications
 License: GPL3
 */
