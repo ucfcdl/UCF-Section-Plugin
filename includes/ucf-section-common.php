@@ -48,7 +48,7 @@ if ( ! class_exists( 'UCF_Section_Common' ) ) {
 					preg_match( $pattern, $section->post_content, $matches );
 
 					if ( $matches ) {
-						$title = strip_tags( $matches[3] );
+						$title = esc_attr( strip_tags( $matches[3] ) );
 					}
 				}
 
