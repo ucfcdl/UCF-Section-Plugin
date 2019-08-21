@@ -28,6 +28,10 @@ The `[ucf-section]` shortcode has several options:
 
 ## Changelog ##
 
+### 1.0.10 ###
+Enhancements:
+* Updated section plugin to automatically add the text from the first heading it finds into an `aria-label` attribute on the section.
+
 ### 1.0.9 ###
 Bug Fixes:
 * Disabled archives by default.

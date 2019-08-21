@@ -3,7 +3,7 @@ Contributors: ucfwebcom
 Tags: ucf, sections
 Requires at least: 4.7.5
 Tested up to: 5.0.3
-Stable Tag: 1.0.9
+Stable Tag: 1.0.10
 License: GPLv3 or later
 License URI: http://www.gnu.org/copyleft/gpl-3.0.html
 
@@ -34,6 +34,10 @@ The `[ucf-section]` shortcode has several options:
 
 
 == Changelog ==
+
+= 1.0.10 =
+Enhancements:
+* Updated section plugin to automatically add the text from the first heading it finds into an `aria-label` attribute on the section.
 
 = 1.0.9 =
 Bug Fixes:
