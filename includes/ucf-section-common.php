@@ -42,7 +42,7 @@ if ( ! class_exists( 'UCF_Section_Common' ) ) {
 				if ( isset( $attr['title'] ) && ! empty( $attr['title'] ) ) {
 					$title = $attr['title'];
 				} else {
-					$pattern = '/<h(\d)([\s\w":\d-=]*)>(.*)<\/h\1>/';
+					$pattern = '/<h(\d)([\s\w":\d\-=]*)>(.*)<\/h\1>/';
 					$matches = array();
 
 					preg_match( $pattern, $section->post_content, $matches );
