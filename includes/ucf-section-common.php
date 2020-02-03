@@ -58,19 +58,25 @@ if ( ! class_exists( 'UCF_Section_Common' ) ) {
 					$section_id = $attr['section_id'];
 				}
 
-				$before = self::ucf_section_display_before( $section, $class, $title, $section_id );
+				$before = '';
 				if ( has_filter( 'ucf_section_display_before' ) ) {
 					$before = apply_filters( 'ucf_section_display_before', $before, $section, $class, $title, $section_id );
+				} else {
+					$before = self::ucf_section_display_before( $section, $class, $title, $section_id );
 				}
 
-				$content = self::ucf_section_display( $section );
+				$content = '';
 				if ( has_filter( 'ucf_section_display' ) ) {
 					$content = apply_filters( 'ucf_section_display', $content, $section );
+				} else {
+					$content = self::ucf_section_display( $section );
 				}
 
-				$after = self::ucf_section_display_after( $section );
+				$after = '';
 				if ( has_filter( 'ucf_section_display_after' ) ) {
 					$after = apply_filters( 'ucf_section_display_after', $after, $section );
+				} else {
+					$after = self::ucf_section_display_after( $section );
 				}
 
 				$retval = $before . $content . $after;
