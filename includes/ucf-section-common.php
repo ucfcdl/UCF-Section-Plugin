@@ -17,6 +17,8 @@ if ( ! class_exists( 'UCF_Section_Common' ) ) {
 		 * @return string | The output of the section content.
 		 **/
 		public static function display_section( $attr ) {
+			global $post;
+
 			$retval = '';
 			$section = null;
 			$class = array( 'ucf-section' );
@@ -24,11 +26,11 @@ if ( ! class_exists( 'UCF_Section_Common' ) ) {
 			$section_id = '';
 
 			if ( isset( $attr['slug'] ) ) {
-				$section = self::get_section_by_slug( $attr['slug'] );
+				$section =  isset( $post->sections['posts'][$attr['slug']] ) ? $post->sections['posts'][$attr['slug']] : null;
 			}
 
 			if ( isset( $attr['id'] ) ) {
-				$section = get_post( $attr['id'] );
+				$section = isset( $post->sections['posts'][$attr['id']] ) ? $post->sections['posts'][$attr['id']] : null;
 			}
 
 			if ( $section ) {
@@ -200,19 +202,16 @@ if ( ! class_exists( 'UCF_Section_Common' ) ) {
 		 * @since 1.0.4
 		 * @return array | Array of section WP_Post objects
 		 **/
-		public static function get_post_sections() {
-			global $post;
+		public static function get_post_sections( $post ) {
 			$sections = array();
 
 			if ( !$post ) { return $sections; } // Abort if $post is not set
 
 			if ( $post->post_type == 'ucf_section' ) {
-				$sections[] = $post;
+				$sections[$post->post_name] = $post;
 			}
 			else if ( has_shortcode( $post->post_content, 'ucf-section' ) ) {
 				$pattern = get_shortcode_regex( array( 'ucf-section' ) );
-
-				preg_match_all( '/' . $pattern . '/s', $post->post_content, $matches );
 
 				if ( preg_match_all( '/' . $pattern . '/s', $post->post_content, $matches ) &&
 					array_key_exists( 3, $matches ) ) {
@@ -221,17 +220,20 @@ if ( ! class_exists( 'UCF_Section_Common' ) ) {
 						$args = shortcode_parse_atts( $match );
 
 						$section = null;
+						$match = null;
 
 						if ( isset( $args['slug'] ) ) {
 							$section = self::get_section_by_slug( $args['slug'] );
+							$match = $args['slug'];
 						}
 
 						if ( isset( $args['id'] ) ) {
 							$section = get_post( $args['id'] );
+							$match = $args['id'];
 						}
 
 						if ( $section !== null ) {
-							$sections[] = $section;
+							$sections[$match] = $section;
 						}
 
 					}
@@ -249,9 +251,9 @@ if ( ! class_exists( 'UCF_Section_Common' ) ) {
 		 * @since 1.0.4
 		 * @return array | array of styles; keys correspond to attachment IDs, values consist of stylesheet file contents
 		 **/
-		public static function get_post_section_styles() {
+		public static function get_post_section_styles( $sections ) {
 			$styles_to_print = array();
-			$sections = self::get_post_sections();
+
 			if ( $sections ) {
 				foreach ( $sections as $section ) {
 					$stylesheet_id = get_post_meta( $section->ID, 'ucf_section_stylesheet', TRUE );
@@ -276,9 +278,9 @@ if ( ! class_exists( 'UCF_Section_Common' ) ) {
 		 * @since 1.0.4
 		 * @return array | array of scripts; keys correspond to attachment IDs, values consist of javascript file contents
 		 **/
-		public static function get_post_section_javascript() {
+		public static function get_post_section_javascript( $sections ) {
 			$scripts_to_print = array();
-			$sections = self::get_post_sections();
+
 			if ( $sections ) {
 				foreach ( $sections as $section ) {
 					$javascript_id = get_post_meta( $section->ID, 'ucf_section_javascript', TRUE );
@@ -304,7 +306,11 @@ if ( ! class_exists( 'UCF_Section_Common' ) ) {
 		 * @return void
 		 **/
 		public static function add_inline_section_styles() {
-			$styles_to_print = self::get_post_section_styles();
+			global $post;
+
+			if ( ! $post ) return;
+
+			$styles_to_print = $post->sections['styles'];
 
 			if ( $styles_to_print ) {
 				foreach ( $styles_to_print as $stylesheet_id => $styles ) {
@@ -321,7 +327,11 @@ if ( ! class_exists( 'UCF_Section_Common' ) ) {
 		 * @return void
 		 **/
 		public static function add_inline_section_javascript() {
-			$scripts_to_print = self::get_post_section_javascript();
+			global $post;
+
+			if ( ! $post ) return;
+
+			$scripts_to_print = $post->sections['scripts'];
 
 			if ( $scripts_to_print ) {
 				foreach ( $scripts_to_print as $javascript_id => $script ) {
@@ -343,11 +353,37 @@ if ( ! class_exists( 'UCF_Section_Common' ) ) {
 			return $mimes;
 		}
 
+		/**
+		 * Filter for adding post data
+		 * @author Jim Barnes
+		 * @since 1.0.12
+		 * @param WP_Post $post The post object
+		 */
+		public static function add_sections_to_post() {
+			global $post;
+
+			if ( ! $post ) return;
+
+			$sections = self::get_post_sections( $post );
+
+			$post->sections = array(
+				'posts' => $sections,
+				'styles' => array(),
+				'scripts' => array()
+			);
+
+			if ( count( $post->sections['posts'] ) < 1 ) return $post;
+
+			$post->sections['styles'] = self::get_post_section_styles( $post->sections['posts'] );
+			$post->sections['scripts'] = self::get_post_section_javascript( $post->sections['posts'] );
+		}
+
 	}
 
 	add_action( 'wp_head', array( 'UCF_Section_Common', 'add_inline_section_styles' ), 99 );
 	add_action( 'wp_footer', array( 'UCF_Section_Common', 'add_inline_section_javascript' ), 99 );
 	add_filter( 'upload_mimes', array( 'UCF_Section_Common', 'add_custom_mimes' ) );
+	add_filter( 'wp', array( 'UCF_Section_Common', 'add_sections_to_post' ), 99, 1 );
 }
 
 ?>
