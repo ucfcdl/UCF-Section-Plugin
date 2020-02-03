@@ -130,7 +130,7 @@ if ( ! class_exists( 'UCF_Section_Common' ) ) {
 		public static function ucf_section_display( $section ) {
 			ob_start();
 		?>
-			<?php echo $section->post_content; // apply_filters( 'the_content', $section->post_content ); ?>
+			<?php echo apply_filters( 'the_content', $section->post_content ); ?>
 		<?php
 			return ob_get_clean();
 		}
