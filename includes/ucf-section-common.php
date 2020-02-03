@@ -17,7 +17,13 @@ if ( ! class_exists( 'UCF_Section_Common' ) ) {
 		 * @return string | The output of the section content.
 		 **/
 		public static function display_section( $attr ) {
-			global $post;
+			global $wp_query;
+
+			$post = $wp_query->get_queried_object();
+
+			if ( get_class( $post ) !== 'WP_Post' ) {
+				$post = null;
+			}
 
 			$retval = '';
 			$section = null;
@@ -26,11 +32,19 @@ if ( ! class_exists( 'UCF_Section_Common' ) ) {
 			$section_id = '';
 
 			if ( isset( $attr['slug'] ) ) {
-				$section =  isset( $post->sections['posts'][$attr['slug']] ) ? $post->sections['posts'][$attr['slug']] : null;
+				if ( $post ) {
+					$section =  isset( $post->sections['posts'][$attr['slug']] ) ? $post->sections['posts'][$attr['slug']] : null;
+				} else {
+					$section = self::get_section_by_slug( $attr['slug'] );
+				}
 			}
 
 			if ( isset( $attr['id'] ) ) {
-				$section = isset( $post->sections['posts'][$attr['id']] ) ? $post->sections['posts'][$attr['id']] : null;
+				if ( $post ) {
+					$section = isset( $post->sections['posts'][$attr['id']] ) ? $post->sections['posts'][$attr['id']] : null;
+				} else {
+					$section = get_post( $attr['id'] );
+				}
 			}
 
 			if ( $section ) {
