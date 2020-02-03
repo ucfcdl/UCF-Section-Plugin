@@ -308,6 +308,8 @@ if ( ! class_exists( 'UCF_Section_Common' ) ) {
 		public static function add_inline_section_styles() {
 			global $post;
 
+			if ( ! $post ) return;
+
 			$styles_to_print = $post->sections['styles'];
 
 			if ( $styles_to_print ) {
@@ -326,6 +328,8 @@ if ( ! class_exists( 'UCF_Section_Common' ) ) {
 		 **/
 		public static function add_inline_section_javascript() {
 			global $post;
+
+			if ( ! $post ) return;
 
 			$scripts_to_print = $post->sections['scripts'];
 
@@ -357,6 +361,9 @@ if ( ! class_exists( 'UCF_Section_Common' ) ) {
 		 */
 		public static function add_sections_to_post() {
 			global $post;
+
+			if ( ! $post ) return;
+
 			$sections = self::get_post_sections( $post );
 
 			$post->sections = array(
