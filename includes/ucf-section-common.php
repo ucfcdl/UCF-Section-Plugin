@@ -202,18 +202,23 @@ if ( ! class_exists( 'UCF_Section_Common' ) ) {
 		 * @since 1.0.4
 		 * @return array | Array of section WP_Post objects
 		 **/
-		public static function get_post_sections( $post ) {
+		public static function get_post_sections( $object ) {
 			$sections = array();
 
-			if ( !$post ) { return $sections; } // Abort if $post is not set
+			if ( !$object ) { return $sections; } // Abort if $post is not set
 
-			if ( $post->post_type == 'ucf_section' ) {
-				$sections[$post->post_name] = $post;
+			if ( get_class( $object ) !== 'WP_Post' ) {
+				$sections = apply_filters( 'get_post_sections', $sections, $object );
+				return $sections;
 			}
-			else if ( has_shortcode( $post->post_content, 'ucf-section' ) ) {
+
+			if ( $object->post_type == 'ucf_section' ) {
+				$sections[$object->post_name] = $post;
+			}
+			else if ( has_shortcode( $object->post_content, 'ucf-section' ) ) {
 				$pattern = get_shortcode_regex( array( 'ucf-section' ) );
 
-				if ( preg_match_all( '/' . $pattern . '/s', $post->post_content, $matches ) &&
+				if ( preg_match_all( '/' . $pattern . '/s', $object->post_content, $matches ) &&
 					array_key_exists( 3, $matches ) ) {
 
 					foreach( $matches[3] as $match ) {
@@ -306,11 +311,13 @@ if ( ! class_exists( 'UCF_Section_Common' ) ) {
 		 * @return void
 		 **/
 		public static function add_inline_section_styles() {
-			global $post;
+			global $wp_query;
 
-			if ( ! $post ) return;
+			$object = $wp_query->get_queried_object();
 
-			$styles_to_print = $post->sections['styles'];
+			if ( ! $object ) return;
+
+			$styles_to_print = $object->sections['styles'];
 
 			if ( $styles_to_print ) {
 				foreach ( $styles_to_print as $stylesheet_id => $styles ) {
@@ -327,11 +334,13 @@ if ( ! class_exists( 'UCF_Section_Common' ) ) {
 		 * @return void
 		 **/
 		public static function add_inline_section_javascript() {
-			global $post;
+			global $wp_query;
 
-			if ( ! $post ) return;
+			$object = $wp_query->get_queried_object();
 
-			$scripts_to_print = $post->sections['scripts'];
+			if ( ! $object ) return;
+
+			$scripts_to_print = $object->sections['scripts'];
 
 			if ( $scripts_to_print ) {
 				foreach ( $scripts_to_print as $javascript_id => $script ) {
@@ -360,22 +369,24 @@ if ( ! class_exists( 'UCF_Section_Common' ) ) {
 		 * @param WP_Post $post The post object
 		 */
 		public static function add_sections_to_post() {
-			global $post;
+			global $wp_query;
 
-			if ( ! $post ) return;
+			$object = $wp_query->get_queried_object();
 
-			$sections = self::get_post_sections( $post );
+			if ( ! $object ) return;
 
-			$post->sections = array(
+			$sections = self::get_post_sections( $object );
+
+			$object->sections = array(
 				'posts' => $sections,
 				'styles' => array(),
 				'scripts' => array()
 			);
 
-			if ( count( $post->sections['posts'] ) < 1 ) return $post;
+			if ( count( $object->sections['posts'] ) < 1 ) return $object;
 
-			$post->sections['styles'] = self::get_post_section_styles( $post->sections['posts'] );
-			$post->sections['scripts'] = self::get_post_section_javascript( $post->sections['posts'] );
+			$object->sections['styles'] = self::get_post_section_styles( $object->sections['posts'] );
+			$object->sections['scripts'] = self::get_post_section_javascript( $object->sections['posts'] );
 		}
 
 	}
