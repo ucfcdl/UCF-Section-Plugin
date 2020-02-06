@@ -28,6 +28,10 @@ The `[ucf-section]` shortcode has several options:
 
 ## Changelog ##
 
+### 1.0.12 ###
+Enhancements:
+* Various changes to the way front end assets are enqueued for sections for faster loading.
+
 ### 1.0.11 ###
 Bug Fixes:
 * Corrected a minor issue with a regex.
