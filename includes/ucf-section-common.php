@@ -233,7 +233,7 @@ if ( ! class_exists( 'UCF_Section_Common' ) ) {
 			}
 
 			if ( $object->post_type == 'ucf_section' ) {
-				$sections[$object->post_name] = $post;
+				$sections[$object->post_name] = $object;
 			}
 			else if ( has_shortcode( $object->post_content, 'ucf-section' ) ) {
 				$pattern = get_shortcode_regex( array( 'ucf-section' ) );
