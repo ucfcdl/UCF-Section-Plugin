@@ -3,7 +3,7 @@ Contributors: ucfwebcom
 Tags: ucf, sections
 Requires at least: 4.7.5
 Tested up to: 5.2.2
-Stable Tag: 1.0.12
+Stable Tag: 1.0.13
 License: GPLv3 or later
 License URI: http://www.gnu.org/copyleft/gpl-3.0.html
 
@@ -34,6 +34,10 @@ The `[ucf-section]` shortcode has several options:
 
 
 == Changelog ==
+
+= 1.0.13 =
+Bug Fixes:
+* Updated critical syntax error that prevented sections from being able to be displauyed on their template pages.
 
 = 1.0.12 =
 Enhancements:
