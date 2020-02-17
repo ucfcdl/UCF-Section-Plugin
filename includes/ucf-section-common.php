@@ -21,7 +21,7 @@ if ( ! class_exists( 'UCF_Section_Common' ) ) {
 
 			$post = $wp_query->get_queried_object();
 
-			if ( get_class( $post ) !== 'WP_Post' ) {
+			if ( $post !== null && get_class( $post ) !== 'WP_Post' ) {
 				$post = null;
 			}
 
