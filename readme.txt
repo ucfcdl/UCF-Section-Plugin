@@ -35,6 +35,11 @@ The `[ucf-section]` shortcode has several options:
 
 == Changelog ==
 
+= 1.0.14 =
+Bug Fixes:
+* Added null check to suppress a warning that was bring thrown.
+* Added logic to handle non-content sections.
+
 = 1.0.13 =
 Bug Fixes:
 * Updated critical syntax error that prevented sections from being able to be displauyed on their template pages.
