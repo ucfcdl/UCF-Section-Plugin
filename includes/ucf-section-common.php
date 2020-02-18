@@ -34,7 +34,9 @@ if ( ! class_exists( 'UCF_Section_Common' ) ) {
 			if ( isset( $attr['slug'] ) ) {
 				if ( $post ) {
 					$section =  isset( $post->sections['posts'][$attr['slug']] ) ? $post->sections['posts'][$attr['slug']] : null;
-				} else {
+				}
+
+				if ( ! $section ) {
 					$section = self::get_section_by_slug( $attr['slug'] );
 				}
 			}
@@ -42,7 +44,9 @@ if ( ! class_exists( 'UCF_Section_Common' ) ) {
 			if ( isset( $attr['id'] ) ) {
 				if ( $post ) {
 					$section = isset( $post->sections['posts'][$attr['id']] ) ? $post->sections['posts'][$attr['id']] : null;
-				} else {
+				}
+
+				if ( ! $section ) {
 					$section = get_post( $attr['id'] );
 				}
 			}
