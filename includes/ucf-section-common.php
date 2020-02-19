@@ -231,20 +231,17 @@ if ( ! class_exists( 'UCF_Section_Common' ) ) {
 
 			if ( !$object ) { return $sections; } // Abort if $post is not set
 
-			if ( get_class( $object ) !== 'WP_Post' ) {
-				$sections = apply_filters( 'get_post_sections', $sections, $object );
-				return $sections;
-			}
-
 			if ( has_filter( 'get_post_sections' ) ) {
-				$sections = apply_filters( 'get_post_sections', $sections );
+				$sections = apply_filters( 'get_post_sections', $sections, $object );
 			}
 
 			if ( $object->post_type === 'ucf_section' ) {
 				$sections[$object->post_name] = $object;
 			}
 
-			$sections = self::get_post_sections_from_content( $object->post_content, $sections );
+			if ( get_class( $object ) === 'WP_Post' ) {
+				$sections = self::get_post_sections_from_content( $object->post_content, $sections );
+			}
 
 			return $sections;
 		}
