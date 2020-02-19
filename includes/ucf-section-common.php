@@ -236,13 +236,33 @@ if ( ! class_exists( 'UCF_Section_Common' ) ) {
 				return $sections;
 			}
 
-			if ( $object->post_type == 'ucf_section' ) {
+			if ( has_filter( 'get_post_sections' ) ) {
+				$sections = apply_filters( 'get_post_sections', $sections );
+			}
+
+			if ( $object->post_type === 'ucf_section' ) {
 				$sections[$object->post_name] = $object;
 			}
-			else if ( has_shortcode( $object->post_content, 'ucf-section' ) ) {
+
+			$sections = self::get_post_sections_from_content( $object->post_content, $sections );
+
+			return $sections;
+		}
+
+		/**
+		 * Helper function that finds the sections
+		 * within a chunk of content.
+		 * @author Jim Barnes
+		 * @since 1.0.15
+		 * @param string $content The content to parse
+		 * @param array $sections The sections already found
+		 * @return array The sections
+		 */
+		public static function get_post_sections_from_content( $content, $sections = array() ) {
+			if ( has_shortcode( $content, 'ucf-section' ) ) {
 				$pattern = get_shortcode_regex( array( 'ucf-section' ) );
 
-				if ( preg_match_all( '/' . $pattern . '/s', $object->post_content, $matches ) &&
+				if ( preg_match_all( '/' . $pattern . '/s', $content, $matches ) &&
 					array_key_exists( 3, $matches ) ) {
 
 					foreach( $matches[3] as $match ) {
@@ -266,7 +286,6 @@ if ( ! class_exists( 'UCF_Section_Common' ) ) {
 						}
 
 					}
-
 				}
 			}
 
