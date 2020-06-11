@@ -51,6 +51,10 @@ if ( ! class_exists( 'UCF_Section_Common' ) ) {
 				}
 			}
 
+			if ( !empty( $attr['random_from_tag'] ) ) {
+				$section = self::get_random_section( $attr['random_from_tag'] );
+			}
+
 			if ( $section ) {
 
 				$class[] = 'ucf-section-' . $section->post_name;
