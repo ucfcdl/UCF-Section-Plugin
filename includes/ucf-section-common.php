@@ -51,6 +51,10 @@ if ( ! class_exists( 'UCF_Section_Common' ) ) {
 				}
 			}
 
+			if ( !empty( $attr['random_from_tag'] ) ) {
+				$section = self::get_random_section( $attr['random_from_tag'] );
+			}
+
 			if ( $section ) {
 
 				$class[] = 'ucf-section-' . $section->post_name;
@@ -427,6 +431,34 @@ if ( ! class_exists( 'UCF_Section_Common' ) ) {
 
 			$object->sections['styles'] = self::get_post_section_styles( $object->sections['posts'] );
 			$object->sections['scripts'] = self::get_post_section_javascript( $object->sections['posts'] );
+		}
+
+		/**
+		 * Returns a randomly selected section from a
+		 * given tag.
+		 *
+		 * @author Cadie Stockman
+		 * @since 1.1.0
+		 *
+		 * @param $tag string | The tag to choose a section from
+		 *
+		 * @return WP_POST|null | The WP_Post object found.
+		 **/
+		public static function get_random_section( $tag ) {
+			$args = array(
+				'post_type'   => 'ucf_section',
+				'numberposts' => 1,
+				'orderby'     => 'rand',
+				'tag'         => $tag,
+			);
+
+			$posts = get_posts( $args );
+
+			if ( count( $posts ) > 0 ) {
+				return $posts[0];
+			}
+
+			return null;
 		}
 
 	}
