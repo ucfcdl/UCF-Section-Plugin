@@ -447,7 +447,7 @@ if ( ! class_exists( 'UCF_Section_Common' ) ) {
 		public static function get_random_section( $tag ) {
 			$args = array(
 				'post_type'   => 'ucf_section',
-				'numberposts' => -1,
+				'numberposts' => 1,
 				'orderby'     => 'rand',
 				'tag'         => $tag,
 			);
