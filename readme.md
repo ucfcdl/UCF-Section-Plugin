@@ -29,6 +29,12 @@ The `[ucf-section]` shortcode has several options:
 
 ## Changelog ##
 
+### 1.1.0 ###
+Enhancements:
+* Added `random_from_tag` shortcode attribute and logic that enables a random section to be displayed from the given tag slug
+* Upgraded packages and gulpfile
+* Added linter configs, Github issue/PR templates, and CONTRIBUTING doc to repo
+
 ### 1.0.15 ###
 Bug Fixes:
 * Updated logic and provided an additional help function for processing sections in content outside of the main post_content
