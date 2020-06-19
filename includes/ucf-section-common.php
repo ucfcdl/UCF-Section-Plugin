@@ -33,7 +33,7 @@ if ( ! class_exists( 'UCF_Section_Common' ) ) {
 
 			if ( isset( $attr['slug'] ) ) {
 				if ( $post ) {
-					$section =  isset( $post->sections['posts'][$attr['slug']] ) ? $post->sections['posts'][$attr['slug']] : null;
+					$section = isset( $post->sections['posts'][$attr['slug']] ) ? $post->sections['posts'][$attr['slug']] : null;
 				}
 
 				if ( ! $section ) {
