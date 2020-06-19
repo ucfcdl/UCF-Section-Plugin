@@ -36,6 +36,10 @@ The `[ucf-section]` shortcode has several options:
 
 == Changelog ==
 
+= 1.1.1 =
+Bug Fixes:
+* Ensure that styles and scripts are loaded when using random shortcode attribute
+
 = 1.1.0 =
 Enhancements:
 * Added `random_from_tag` shortcode attribute and logic that enables a random section to be displayed from the given tag slug
