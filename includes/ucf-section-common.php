@@ -52,7 +52,13 @@ if ( ! class_exists( 'UCF_Section_Common' ) ) {
 			}
 
 			if ( !empty( $attr['random_from_tag'] ) ) {
-				$section = self::get_random_section( $attr['random_from_tag'] );
+				if ( $post ) {
+					$section = isset( $post->sections['posts'][$attr['random_from_tag']] ) ? $post->sections['posts'][$attr['random_from_tag']] : null;
+				}
+
+				if ( ! $section ) {
+					$section = self::get_random_section( $attr['random_from_tag'] );
+				}
 			}
 
 			if ( $section ) {
@@ -280,6 +286,11 @@ if ( ! class_exists( 'UCF_Section_Common' ) ) {
 						if ( isset( $args['id'] ) ) {
 							$section = get_post( $args['id'] );
 							$match = $args['id'];
+						}
+
+						if ( isset( $args['random_from_tag'] ) ) {
+							$section = self::get_random_section( $args['random_from_tag'] );
+							$match = $args['random_from_tag'];
 						}
 
 						if ( $section !== null ) {
