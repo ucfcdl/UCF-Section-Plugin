@@ -239,7 +239,7 @@ if ( ! class_exists( 'UCF_Section_Common' ) ) {
 		public static function get_post_sections( $object ) {
 			$sections = array();
 
-			if ( !$object ) { return $sections; } // Abort if $post is not set
+			if ( !$object || is_admin() ) { return $sections; } // Abort if $post is not set
 
 			if ( has_filter( 'get_post_sections' ) ) {
 				$sections = apply_filters( 'get_post_sections', $sections, $object );
