@@ -29,6 +29,12 @@ The `[ucf-section]` shortcode has several options:
 
 ## Changelog ##
 
+### 1.1.2 ###
+Bug Fixes:
+* Updated npm packages
+* Fixed an issue where get_post_sections() throws notice
+* Added responsive images with wp_make_content_images_responsive()
+
 ### 1.1.1 ###
 Bug Fixes:
 * Ensure that styles and scripts are loaded when using random shortcode attribute
