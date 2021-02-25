@@ -33,7 +33,7 @@ if ( ! class_exists( 'UCF_Section_Common' ) ) {
 
 			if ( isset( $attr['slug'] ) ) {
 				if ( $post ) {
-					$section =  isset( $post->sections['posts'][$attr['slug']] ) ? $post->sections['posts'][$attr['slug']] : null;
+					$section = isset( $post->sections['posts'][$attr['slug']] ) ? $post->sections['posts'][$attr['slug']] : null;
 				}
 
 				if ( ! $section ) {
@@ -48,6 +48,16 @@ if ( ! class_exists( 'UCF_Section_Common' ) ) {
 
 				if ( ! $section ) {
 					$section = get_post( $attr['id'] );
+				}
+			}
+
+			if ( !empty( $attr['random_from_tag'] ) ) {
+				if ( $post ) {
+					$section = isset( $post->sections['posts'][$attr['random_from_tag']] ) ? $post->sections['posts'][$attr['random_from_tag']] : null;
+				}
+
+				if ( ! $section ) {
+					$section = self::get_random_section( $attr['random_from_tag'] );
 				}
 			}
 
@@ -101,7 +111,7 @@ if ( ! class_exists( 'UCF_Section_Common' ) ) {
 
 			}
 
-			return $retval;
+			return wp_make_content_images_responsive( $retval );
 		}
 
 		/**
@@ -229,7 +239,7 @@ if ( ! class_exists( 'UCF_Section_Common' ) ) {
 		public static function get_post_sections( $object ) {
 			$sections = array();
 
-			if ( !$object ) { return $sections; } // Abort if $post is not set
+			if ( !$object || is_admin() ) { return $sections; } // Abort if $post is not set
 
 			if ( has_filter( 'get_post_sections' ) ) {
 				$sections = apply_filters( 'get_post_sections', $sections, $object );
@@ -276,6 +286,11 @@ if ( ! class_exists( 'UCF_Section_Common' ) ) {
 						if ( isset( $args['id'] ) ) {
 							$section = get_post( $args['id'] );
 							$match = $args['id'];
+						}
+
+						if ( isset( $args['random_from_tag'] ) ) {
+							$section = self::get_random_section( $args['random_from_tag'] );
+							$match = $args['random_from_tag'];
 						}
 
 						if ( $section !== null ) {
@@ -427,6 +442,34 @@ if ( ! class_exists( 'UCF_Section_Common' ) ) {
 
 			$object->sections['styles'] = self::get_post_section_styles( $object->sections['posts'] );
 			$object->sections['scripts'] = self::get_post_section_javascript( $object->sections['posts'] );
+		}
+
+		/**
+		 * Returns a randomly selected section from a
+		 * given tag.
+		 *
+		 * @author Cadie Stockman
+		 * @since 1.1.0
+		 *
+		 * @param $tag string | The tag to choose a section from
+		 *
+		 * @return WP_POST|null | The WP_Post object found.
+		 **/
+		public static function get_random_section( $tag ) {
+			$args = array(
+				'post_type'   => 'ucf_section',
+				'numberposts' => 1,
+				'orderby'     => 'rand',
+				'tag'         => $tag,
+			);
+
+			$posts = get_posts( $args );
+
+			if ( count( $posts ) > 0 ) {
+				return $posts[0];
+			}
+
+			return null;
 		}
 
 	}

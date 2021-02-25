@@ -244,13 +244,17 @@ if ( ! class_exists( 'UCF_Section_PostType' ) ) {
 		 **/
 		public static function taxonomies() {
 			$retval = array();
-			$retval = apply_filters( 'ucf_section_taxonomies', $retval );
+			$valid_taxonomies = array(
+				'post_tag'
+			);
+			$valid_taxonomies = apply_filters( 'ucf_section_taxonomies', $valid_taxonomies );
 
-			foreach( $retval as $taxonomy ) {
-				if ( ! taxonomy_exists( $taxonomy ) ) {
-					unset( $retval[$taxonomy] );
+			foreach( $valid_taxonomies as $taxonomy ) {
+				if ( taxonomy_exists( $taxonomy ) ) {
+					$retval[] = $taxonomy;
 				}
 			}
+
 			return $retval;
 		}
 	}
